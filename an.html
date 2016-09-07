@@ -5,15 +5,8 @@
     <meta charset="utf-8">
     <title></title>
     <script src="./node_modules/zepto/src/zepto.js" charset="utf-8"></script>
+    <script src="./node_modules/zepto/src/event.js" charset="utf-8"></script>
     <style>
-        @keyframes mymove {
-            from {
-                left: 0px;
-            }
-            to {
-                left: 200px;
-            }
-        }
 
         #animation {
             width: 100px;
@@ -24,10 +17,10 @@
             transition: all 0.1s ease;
         }
 
-        #animation:hover {
+        /*#animation:hover {
             width: 300px;
             height: 300px
-        }
+        }*/
     </style>
 </head>
 
@@ -39,33 +32,46 @@
 
     </ul>
     <script type="text/javascript">
-        var fx.op = {
+        var fx_op = {
             qureyback: []
         };
+        var ClearCssTransition={
+          'transition-property':'',
+          'transition-duration':'',
+          'transition-timing-function':'',
+          'transition-delay':''
+        }
 
-        function fx(elements, properties, time, speed, callback) {
+        function fx(elements, properties, time, speed, callback, delay) {
             var cssTransition = {},
                 wrapCallback;
+            cssTransition['transition-property'] = "all"
             cssTransition['transition-duration'] = time / 1000 + 's';
-            cssTransition['transition-timing-function'] = (ease || 'linear');
-
+            cssTransition['transition-timing-function'] = (speed || 'linear');
+            cssTransition['transition-delay'] = delay || 0;
             wrapCallback = (e) => {
-                console.log(e.targ)
+                console.log(e)
+                elements.css(ClearCssTransition)
                 callback(e)
                 return elements.unbind('transitionend', wrapCallback)
             }
-
-            elements.on('transitionend', wrapCallback, false)
+            elements.on('transitionend', wrapCallback)
             elements.css(cssTransition).css(properties)
         }
 
+        // delete cssTransition['transition-property']
+        // delete cssTransition['transition-duration']
+        // delete cssTransition['transition-delay']
+        // delete cssTransition['transition-timing-function']
 
-        // var anim = $("#animation");
-        //
-        // anim.on("transitionend", function(e) {
-        //     console.log(e)
-        //     console.log('transitionend')
-        // }, false);
+        // $(document).ready(function(){
+        //   // alert(1)
+        //   fx($('#animation'), {width: "400px",
+        //   height:  "400px"} ,5000, 'linear', function(e){
+        //     console.log(e.propertyName)
+        //   })
+        // })
+
     </script>
 </body>
 
